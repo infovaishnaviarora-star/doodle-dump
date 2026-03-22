@@ -173,7 +173,9 @@
                 <div class="page-front">
                     <img src="images/A4 - 19.jpg" alt="Illustration 2">
                 </div>
-                <div class="page-back"></div>
+                <div class="page-back">
+                    <img src="images/back cover.jpg" alt="Back Cover">
+                </div>
             </div>
             <div class="page">
                 <div class="page-front">
@@ -188,7 +190,9 @@
                 <div class="page-back"></div>
             </div>
             <div class="page">
-                <div class="page-front"></div>
+                <div class="page-front">
+                    <img src="images/Cover.jpg" alt="Cover">
+                </div>
                 <div class="page-back"></div>
             </div>
         </div>
@@ -228,8 +232,9 @@
             const pageToFlip = pages[pages.length - 1 - currentFlip];
             pageToFlip.classList.add('flipped');
             // After halfway through animation, drop z-index so it goes behind
+            // Keep the last page (bottom) at z-index 1 so its back face stays visible
             setTimeout(() => {
-                pageToFlip.style.zIndex = 0;
+                pageToFlip.style.zIndex = (currentFlip === pages.length) ? 1 : 0;
                 updateShadow();
             }, 400);
             currentFlip++;
