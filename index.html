@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho&display=swap" rel="stylesheet">
+    <title>Illustration Portfolio Book</title>
+    <style>
+        :root {
+            --bg-color: #AED1DA;
+            --book-width: min(300px, 42vh);
+            --book-height: min(420px, 60vh);
+            --speed: 0.8s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #2a4a52;
+            overflow: hidden;
+        }
+
+        h1 { margin-bottom: clamp(16px, 4vh, 40px); font-family: 'BIZ UDMincho', serif; font-weight: 400; opacity: 0.9; font-size: clamp(1.2rem, 4vw, 2rem); }
+
+        /* Wrapper to keep the book visually centered */
+        .book-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* The Book Container */
+        .book {
+            position: relative;
+            width: var(--book-width);
+            height: var(--book-height);
+            perspective: 1500px;
+            transform: translateX(50%);
+        }
+
+        /* Individual Page Style */
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            transition: transform var(--speed) cubic-bezier(0.645, 0.045, 0.355, 1),
+                        z-index 0s linear calc(var(--speed) / 2);
+            transform-style: preserve-3d;
+            transform-origin: left;
+            background: #fff;
+            border-radius: 4px 10px 10px 4px;
+            box-shadow: none;
+        }
+
+        .page-front,
+        .page-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 4px 10px 10px 4px;
+        }
+
+        .page-front {
+            background: #fff;
+        }
+
+        .page-back {
+            background: #f5f5f5;
+            transform: rotateY(180deg);
+            border-radius: 10px 4px 4px 10px;
+        }
+
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        /* Flip animation */
+        .page.flipped {
+            transform: rotateY(-180deg);
+            box-shadow: none;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            margin-top: clamp(20px, 4vh, 40px);
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-buttons button {
+            padding: 10px 24px;
+            border: 2px solid rgba(42,74,82,0.3);
+            background: transparent;
+            color: #2a4a52;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background: rgba(42,74,82,0.1);
+            border-color: rgba(42,74,82,0.5);
+        }
+
+        .nav-hint {
+            margin-top: 16px;
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            opacity: 0.4;
+        }
+
+        /* Small screens */
+        @media (max-width: 480px) {
+            :root {
+                --book-width: calc(50vw - 20px);
+                --book-height: calc((50vw - 20px) * 1.4);
+            }
+
+            .nav-buttons button {
+                padding: 8px 18px;
+            }
+        }
+
+        /* Medium screens */
+        @media (min-width: 481px) and (max-width: 768px) {
+            :root {
+                --book-width: 40vw;
+                --book-height: calc(40vw * 1.4);
+            }
+        }
+
+        /* Short viewports (landscape phones) */
+        @media (max-height: 500px) {
+            :root {
+                --book-width: 30vh;
+                --book-height: 42vh;
+            }
+
+            h1 { margin-bottom: 10px; }
+            .nav-buttons { margin-top: 10px; }
+            .nav-hint { margin-top: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Doodle Dump</h1>
+
+    <div class="book-wrapper">
+        <div class="book" id="book">
+            <div class="page">
+                <div class="page-front">
+                    <img src="images/A4 - 19.png" alt="Illustration 2">
+                </div>
+                <div class="page-back"></div>
+            </div>
+            <div class="page">
+                <div class="page-front">
+                    <img src="images/A4 - 20.png" alt="Illustration 3">
+                </div>
+                <div class="page-back"></div>
+            </div>
+            <div class="page">
+                <div class="page-front">
+                    <img src="images/A4 - 21.png" alt="Illustration 4">
+                </div>
+                <div class="page-back"></div>
+            </div>
+            <div class="page">
+                <div class="page-front"></div>
+                <div class="page-back"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button id="prevBtn">&#8592; Previous</button>
+        <button id="nextBtn">Next &#8594;</button>
+    </div>
+
+    <div class="nav-hint">Use buttons or click pages to flip</div>
+
+    <script>
+        const pages = [...document.querySelectorAll('.page')];
+        // Track which page index we're on (0 = cover on top)
+        let currentFlip = 0;
+
+        const SHADOW = '0 8px 25px rgba(42,74,82,0.1), 0 2px 8px rgba(42,74,82,0.06)';
+
+        function updateShadow() {
+            pages.forEach(p => p.style.boxShadow = 'none');
+            const unflipped = pages.filter(p => !p.classList.contains('flipped'));
+            if (unflipped.length > 0) {
+                unflipped[unflipped.length - 1].style.boxShadow = SHADOW;
+            }
+        }
+
+        // Last in DOM = highest z-index = on top (cover)
+        pages.forEach((page, index) => {
+            page.style.zIndex = index + 1;
+        });
+        updateShadow();
+
+        function flipNext() {
+            if (currentFlip >= pages.length) return;
+            // Flip the topmost unflipped page (highest z-index)
+            const pageToFlip = pages[pages.length - 1 - currentFlip];
+            pageToFlip.classList.add('flipped');
+            // After halfway through animation, drop z-index so it goes behind
+            setTimeout(() => {
+                pageToFlip.style.zIndex = 0;
+                updateShadow();
+            }, 400);
+            currentFlip++;
+            updateShadow();
+        }
+
+        function flipPrev() {
+            if (currentFlip <= 0) return;
+            currentFlip--;
+            const pageToUnflip = pages[pages.length - 1 - currentFlip];
+            // Restore z-index before unflipping
+            pageToUnflip.style.zIndex = pages.length + 1;
+            pageToUnflip.classList.remove('flipped');
+            updateShadow();
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', flipNext);
+        document.getElementById('prevBtn').addEventListener('click', flipPrev);
+
+        // Click page directly: if it's the top unflipped page, flip next; if flipped, flip prev
+        pages.forEach(page => {
+            page.addEventListener('click', () => {
+                if (page.classList.contains('flipped')) {
+                    flipPrev();
+                } else {
+                    flipNext();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
