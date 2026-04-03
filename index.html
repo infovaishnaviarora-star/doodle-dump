@@ -119,9 +119,14 @@
             transition: all 0.3s;
         }
 
-        .nav-buttons button:hover {
+        .nav-buttons button:hover:not(:disabled) {
             background: rgba(42,74,82,0.1);
             border-color: rgba(42,74,82,0.5);
+        }
+
+        .nav-buttons button:disabled {
+            opacity: 0.3;
+            cursor: default;
         }
 
         .nav-hint {
@@ -161,9 +166,32 @@
             .nav-buttons { margin-top: 10px; }
             .nav-hint { margin-top: 8px; }
         }
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px 24px;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        .top-nav a {
+            display: inline-block;
+        }
+
+        .top-nav img {
+            height: 36px;
+        }
     </style>
 </head>
 <body>
+
+    <nav class="top-nav">
+        <a href="https://vaishnaviarora.framer.website/" target="_blank">
+            <img src="Vaishnavi arora logo.png" alt="Vaishnavi Arora">
+        </a>
+    </nav>
 
     <h1>Doodle Dump</h1>
 
@@ -176,6 +204,24 @@
                 <div class="page-back">
                     <img src="images/back cover.jpg" alt="Back Cover">
                 </div>
+            </div>
+            <div class="page">
+                <div class="page-front">
+                    <img src="images/Scenery.png" alt="Scenery">
+                </div>
+                <div class="page-back"></div>
+            </div>
+            <div class="page">
+                <div class="page-front">
+                    <img src="images/Girl illustration.png" alt="Girl Illustration">
+                </div>
+                <div class="page-back"></div>
+            </div>
+            <div class="page">
+                <div class="page-front">
+                    <img src="images/Green.png" alt="Green People">
+                </div>
+                <div class="page-back"></div>
             </div>
             <div class="page">
                 <div class="page-front">
@@ -209,8 +255,17 @@
         const pages = [...document.querySelectorAll('.page')];
         // Track which page index we're on (0 = cover on top)
         let currentFlip = 0;
+        let isAnimating = false;
+        const ANIM_DURATION = 800; // matches --speed in CSS
 
         const SHADOW = '0 8px 25px rgba(42,74,82,0.1), 0 2px 8px rgba(42,74,82,0.06)';
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateButtons() {
+            prevBtn.disabled = currentFlip === 0;
+            nextBtn.disabled = currentFlip === pages.length;
+        }
 
         function updateShadow() {
             pages.forEach(p => p.style.boxShadow = 'none');
@@ -225,34 +280,40 @@
             page.style.zIndex = index + 1;
         });
         updateShadow();
+        updateButtons();
 
         function flipNext() {
-            if (currentFlip >= pages.length) return;
+            if (isAnimating || currentFlip >= pages.length) return;
+            isAnimating = true;
             // Flip the topmost unflipped page (highest z-index)
             const pageToFlip = pages[pages.length - 1 - currentFlip];
             pageToFlip.classList.add('flipped');
+            currentFlip++;
             // After halfway through animation, drop z-index so it goes behind
-            // Keep the last page (bottom) at z-index 1 so its back face stays visible
             setTimeout(() => {
                 pageToFlip.style.zIndex = (currentFlip === pages.length) ? 1 : 0;
                 updateShadow();
             }, 400);
-            currentFlip++;
+            setTimeout(() => { isAnimating = false; }, ANIM_DURATION);
             updateShadow();
+            updateButtons();
         }
 
         function flipPrev() {
-            if (currentFlip <= 0) return;
+            if (isAnimating || currentFlip <= 0) return;
+            isAnimating = true;
             currentFlip--;
             const pageToUnflip = pages[pages.length - 1 - currentFlip];
             // Restore z-index before unflipping
             pageToUnflip.style.zIndex = pages.length + 1;
             pageToUnflip.classList.remove('flipped');
+            setTimeout(() => { isAnimating = false; }, ANIM_DURATION);
             updateShadow();
+            updateButtons();
         }
 
-        document.getElementById('nextBtn').addEventListener('click', flipNext);
-        document.getElementById('prevBtn').addEventListener('click', flipPrev);
+        nextBtn.addEventListener('click', flipNext);
+        prevBtn.addEventListener('click', flipPrev);
 
         // Click page directly: if it's the top unflipped page, flip next; if flipped, flip prev
         pages.forEach(page => {
